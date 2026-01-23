@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Budget Optimizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style> body { font-family: 'Manrope', sans-serif; } </style>
+</head>
+<body class="bg-[#f6f8f6] font-display text-gray-900">
+<div class="flex h-screen w-full">
+    
+    <aside class="w-64 bg-white border-r border-gray-200 p-6 hidden md:block">
+        <div class="flex items-center gap-3 mb-10">
+            <div class="bg-[#13ec5b]/20 flex items-center justify-center rounded-lg size-10 text-[#13ec5b]"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+            <h1 class="text-lg font-bold">ExpenseTracker</h1>
+        </div>
+        <nav class="flex flex-col gap-2">
+            <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100"><span class="material-symbols-outlined">grid_view</span><span>Dashboard</span></a>
+            <a href="/budget_optimizer" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#13ec5b]/10 text-green-700 font-bold"><span class="material-symbols-outlined">architecture</span><span>Optimizer</span></a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 overflow-y-auto">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-black mb-2 flex items-center gap-2"><span class="material-symbols-outlined text-4xl text-blue-500">architecture</span> Budget Optimizer</h1>
+            <p class="text-gray-500 mb-8">Add as many expenses as you want. AI will restructure them.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 h-fit">
+                    <form action="/budget_optimizer" method="POST">
+                        <label for="total_budget" class="block text-xs font-bold uppercase text-gray-500 mb-1">Total Budget</label>
+                        <input id="total_budget" type="number" name="total_budget" placeholder="Total Amount (e.g. 10000)" class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 font-bold text-lg mb-6" required aria-label="Total Budget">
+                        
+                        <p class="text-xs font-bold uppercase text-gray-400 mb-2">Planned Expenses</p>
+                        
+                        <div id="expense-container" class="space-y-3">
+                            <div class="flex gap-2">
+                                <input type="text" name="categories[]" placeholder="Category" class="flex-1 p-3 rounded-lg bg-gray-50 border" required aria-label="Category">
+                                <input type="number" name="amounts[]" placeholder="Amount" class="w-32 p-3 rounded-lg bg-gray-50 border" required aria-label="Amount">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="addRow()" class="mt-3 text-sm font-bold text-blue-500 flex items-center gap-1 hover:text-blue-700">
+                            <span class="material-symbols-outlined text-lg">add_circle</span> Add Another Expense
+                        </button>
+
+                        <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:opacity-80 transition mt-6 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">auto_fix</span> Optimize My Budget
+                        </button>
+                    </form>
+                </div>
+
+                {% if optimized_plan %}
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100">
+                        <h2 class="font-bold text-lg text-blue-700 mb-4 flex items-center gap-2"><span class="material-symbols-outlined">psychology</span> AI Strategy</h2>
+                        <ul class="space-y-3">
+                            {% for advice in advice_list %}
+                            <li class="flex items-start gap-3 text-sm font-medium text-gray-700">
+                                <span class="material-symbols-outlined text-base mt-0.5 text-blue-500">check_circle</span>
+                                <span>{{ advice|safe }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-bold">
+                                <tr><th class="p-4">Category</th><th class="p-4">Your Plan</th><th class="p-4 text-[#13ec5b]">AI Plan</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                {% for cat, val in comparison.items() %}
+                                <tr>
+                                    <td class="p-4 font-bold">{{ cat }}</td>
+                                    <td class="p-4 text-gray-500">{{ format_money(val.user) }}</td>
+                                    <td class="p-4 font-black text-[#13ec5b] text-lg">{{ format_money(val.ai) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    function addRow() {
+        const div = document.createElement('div');
+        div.className = 'flex gap-2';
+        div.innerHTML = `
+            <input type="text" name="categories[]" placeholder="Category" class="flex-1 p-3 rounded-lg bg-gray-50 border" required aria-label="Category">
+            <input type="number" name="amounts[]" placeholder="Amount" class="w-32 p-3 rounded-lg bg-gray-50 border" required aria-label="Amount">
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600" aria-label="Delete Row"><span class="material-symbols-outlined">delete</span></button>
+        `;
+        document.getElementById('expense-container').appendChild(div);
+    }
+</script>
+</body>
+</html>

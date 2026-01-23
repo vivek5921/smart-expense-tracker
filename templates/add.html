@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#f6f8f6] font-[Manrope] flex items-center justify-center h-screen">
+    <div class="bg-white w-full max-w-2xl p-10 rounded-2xl shadow-lg">
+        <h1 class="text-3xl font-black mb-6">Add Expense</h1>
+        <form action="/add" method="POST">
+            <div class="mb-8">
+                <label for="amount" class="block text-sm font-bold text-gray-500 mb-2 uppercase">Amount</label>
+                <div class="flex items-center text-5xl font-black">
+                    <span class="mr-2">{{ currency }}</span>
+                    <input id="amount" name="amount" type="number" step="0.01" class="w-full outline-none border-b-2 border-gray-200 focus:border-[#13ec5b]" placeholder="0.00" required autofocus aria-label="Amount">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="category" class="block font-bold mb-2">Category</label>
+                    <select id="category" name="category" class="w-full p-3 border rounded-lg bg-gray-50" aria-label="Category">
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Housing">Housing</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="date" class="block font-bold mb-2">Date</label>
+                    <input id="date" name="date" type="date" class="w-full p-3 border rounded-lg bg-gray-50" required aria-label="Date">
+                </div>
+            </div>
+            <div class="mb-8">
+                <label for="description" class="block font-bold mb-2">Description</label>
+                <textarea id="description" name="description" class="w-full p-3 border rounded-lg bg-gray-50 h-24" placeholder="What is this for?" aria-label="Description"></textarea>
+            </div>
+            <div class="flex gap-4">
+                <a href="/expenses" class="flex-1 py-3 text-center font-bold border rounded-lg hover:bg-gray-50">Cancel</a>
+                <button type="submit" class="flex-1 bg-[#13ec5b] py-3 rounded-lg font-bold hover:bg-green-400">Save</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

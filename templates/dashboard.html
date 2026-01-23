@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style> 
+    body { font-family: 'Manrope', sans-serif; } 
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+</style>
+</head>
+<body class="bg-[#f8f9fa] text-[#111813] antialiased">
+
+<div class="flex h-screen w-full overflow-hidden">
+    
+    <aside class="w-72 bg-white border-r border-gray-100 flex flex-col justify-between p-6 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-10">
+        <div>
+            <div class="flex items-center gap-3 mb-10">
+                <div class="bg-[#13ec5b]/10 flex items-center justify-center rounded-xl size-10 text-[#13ec5b]">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-tight">ExpenseTracker</h1>
+                    <p class="text-xs text-gray-400 font-medium">Student Edition</p>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a href="/dashboard" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-[#13ec5b]/10 text-[#0fa842] font-bold transition-all">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expenses" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-gray-500 font-semibold hover:bg-gray-50 hover:text-gray-900 transition-all">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/ai_analysis" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-gray-500 font-semibold hover:bg-gray-50 hover:text-gray-900 transition-all">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    <span>AI Analysis</span>
+                </a>
+                <a href="/budget_optimizer" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-gray-500 font-semibold hover:bg-gray-50 hover:text-gray-900 transition-all">
+                    <span class="material-symbols-outlined">architecture</span>
+                    <span>Budget Optimizer</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <a href="/toggle_currency" class="flex items-center justify-between p-4 rounded-2xl border border-dashed border-gray-300 hover:border-[#13ec5b] hover:bg-[#13ec5b]/5 transition-all group cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-gray-400 group-hover:text-[#13ec5b]">currency_exchange</span>
+                    <div class="text-sm">
+                        <p class="font-bold text-gray-700">Switch Currency</p>
+                        <p class="text-xs text-gray-400">Current: {% if currency == '$' %}USD ($){% else %}Rupees (₹){% endif %}</p>
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-full bg-[#13ec5b]/20 text-[#0fa842] font-bold flex items-center justify-center text-lg">
+                        {{ username[0]|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-900">{{ username }}</p>
+                        <p class="text-xs text-gray-400">Free Plan</p>
+                    </div>
+                </div>
+                <a href="/logout" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <span class="material-symbols-outlined">logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 h-full overflow-y-auto p-8 lg:p-12">
+        
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+                <h2 class="text-3xl font-black text-gray-900 mb-1">Welcome back, {{ username }}</h2>
+                <p class="text-gray-500 font-medium">Here's what's happening with your money today.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="window.print()" class="flex items-center gap-2 px-5 py-3 rounded-full border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-lg">ios_share</span> Export
+                </button>
+                <a href="/add" class="flex items-center gap-2 px-5 py-3 rounded-full bg-[#13ec5b] text-[#052e12] text-sm font-bold hover:bg-[#10d452] transition-all shadow-[0_4px_14px_rgba(19,236,91,0.4)]">
+                    <span class="material-symbols-outlined text-lg">add</span> Add Expense
+                </a>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            
+            <div class="bg-white p-6 rounded-[2rem] shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100 relative overflow-hidden group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="size-10 rounded-xl bg-[#13ec5b]/10 flex items-center justify-center text-[#13ec5b]">
+                        <span class="material-symbols-outlined">account_balance</span>
+                    </div>
+                    <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[10px]">trending_up</span> +5.0%
+                    </span>
+                </div>
+                <p class="text-gray-400 text-sm font-bold mb-1">Total Spent</p>
+                <h3 class="text-3xl font-black text-gray-900">{{ format_money(total_spent) }}</h3>
+            </div>
+
+            <div class="bg-white p-6 rounded-[2rem] shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="size-10 rounded-xl bg-red-50 flex items-center justify-center text-red-500">
+                        <span class="material-symbols-outlined">credit_card</span>
+                    </div>
+                    <span class="bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[10px]">trending_down</span> -12%
+                    </span>
+                </div>
+                <p class="text-gray-400 text-sm font-bold mb-1">Budget Status</p>
+                <h3 class="text-3xl font-black text-gray-900">
+                    {% if remaining > 0 %}Active{% else %}Overlimit{% endif %}
+                </h3>
+            </div>
+
+            <div class="bg-white p-6 rounded-[2rem] shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                            <span class="material-symbols-outlined">flight</span>
+                        </div>
+                        <span class="font-bold text-gray-900">Monthly Savings</span>
+                    </div>
+                    <span class="text-[#13ec5b] font-bold text-sm">65%</span>
+                </div>
+                <div class="flex justify-between text-xs font-bold text-gray-400 mb-2">
+                    <span>{{ format_money(remaining) }} saved</span>
+                    <span>Goal: {{ format_money(budget) }}</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <div id="savings-bar" class="bg-[#13ec5b] h-3 rounded-full transition-all duration-1000"></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-3 font-medium">Keep it up! You're on track.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            
+            <div class="bg-white p-8 rounded-[2rem] shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100 lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-gray-900">Spending Activity</h3>
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-1 flex text-xs font-bold">
+                        <a href="?period=week" class="px-3 py-1 rounded-md {% if period == 'week' %}bg-white shadow-sm text-black{% else %}text-gray-400{% endif %}">Week</a>
+                        <a href="?period=month" class="px-3 py-1 rounded-md {% if period == 'month' %}bg-white shadow-sm text-black{% else %}text-gray-400{% endif %}">Month</a>
+                    </div>
+                </div>
+                <div class="relative h-64 w-full">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2rem] shadow-[0_2px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                <h3 class="font-bold text-lg text-gray-900 mb-6">Top Categories</h3>
+                <div class="relative h-48 mb-6 flex justify-center">
+                    <canvas id="categoryChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-xs text-gray-400 font-bold uppercase">Total</span>
+                        <span class="text-xl font-black text-gray-900">{{ format_money(total_spent) }}</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-[#13ec5b]"></span> <span class="font-bold text-gray-600">Food</span></div>
+                        <span class="font-bold text-gray-900">40%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-[#fbbf24]"></span> <span class="font-bold text-gray-600">Transport</span></div>
+                        <span class="font-bold text-gray-900">25%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<div id="chart-data" 
+    data-dates='{{ chart_dates | tojson }}' 
+    data-daily='{{ chart_daily_amts | tojson }}'
+    data-cats='{{ chart_cats | tojson }}'
+    data-cat-amts='{{ chart_cat_amts | tojson }}'
+    style="display: none;">
+</div>
+
+<script>
+    // Safe Data Retrieval (JS no longer sees Python code directly)
+    const chartDiv = document.getElementById('chart-data');
+    const lineLabels = JSON.parse(chartDiv.dataset.dates);
+    const lineData = JSON.parse(chartDiv.dataset.daily);
+    const catLabels = JSON.parse(chartDiv.dataset.cats);
+    const catData = JSON.parse(chartDiv.dataset.catAmts);
+
+    // Set savings bar width dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        var savingsBar = document.getElementById('savings-bar');
+        if (savingsBar) {
+            savingsBar.style.width = "{{ savings_pct }}";
+        }
+    });
+
+    const ctxLine = document.getElementById('spendingChart').getContext('2d');
+    new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: lineLabels,
+            datasets: [{
+                label: 'Spent',
+                data: lineData,
+                borderColor: '#13ec5b',
+                backgroundColor: 'rgba(19, 236, 91, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false, beginAtZero: true },
+                x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' }, color: '#9ca3af' } }
+            }
+        }
+    });
+
+    const ctxDonut = document.getElementById('categoryChart').getContext('2d');
+    const colors = ['#13ec5b', '#fbbf24', '#f472b6', '#60a5fa', '#a78bfa'];
+
+    new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+            labels: catLabels,
+            datasets: [{
+                data: catData,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '75%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ExpenseTracker - View Expenses</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { "primary": "#13ec5b", "background-light": "#f6f8f6", "background-dark": "#102216", "surface-light": "#ffffff", "surface-dark": "#1a2c20", "text-primary-light": "#111813", "text-primary-dark": "#e0e6e2", "text-secondary-light": "#61896f", "text-secondary-dark": "#8aab97" },
+                fontFamily: { "display": ["Manrope", "sans-serif"] },
+            },
+        },
+    }
+</script>
+<style>
+    body { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display antialiased overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="w-64 h-full bg-surface-light dark:bg-surface-dark border-r border-[#eef4f0] dark:border-[#2a3c30] flex-shrink-0 flex flex-col justify-between hidden md:flex transition-colors duration-200">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-10">
+<div class="bg-primary/20 flex items-center justify-center rounded-lg size-10 text-primary"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+<div><h1 class="text-lg font-bold tracking-tight">ExpenseTracker</h1><p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Student Edition</p></div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium" href="/dashboard"><span class="material-symbols-outlined">grid_view</span><span>Dashboard</span></a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary dark:text-primary font-medium transition-colors" href="/expenses"><span class="material-symbols-outlined" data-weight="fill">receipt_long</span><span>Expenses</span></a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium" href="/ai_analysis"><span class="material-symbols-outlined">auto_awesome</span><span>AI Analysis</span></a>
+</nav>
+</div>
+<div class="p-6 border-t border-[#eef4f0] dark:border-[#2a3c30]">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium mb-2" href="/logout"><span class="material-symbols-outlined">logout</span><span>Logout</span></a>
+</div>
+</aside>
+<main class="flex-1 h-full overflow-y-auto overflow-x-hidden no-scrollbar bg-background-light dark:bg-background-dark">
+<div class="max-w-[1200px] mx-auto p-4 md:p-8 lg:p-10 flex flex-col gap-8">
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div><h2 class="text-3xl md:text-4xl font-black tracking-tight text-text-primary-light dark:text-text-primary-dark">Expenses</h2><p class="text-text-secondary-light dark:text-text-secondary-dark mt-1 font-medium">Manage and track your spending habits.</p></div>
+<div class="flex gap-3"><button class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#dbe6df] dark:border-[#2a3c30] bg-surface-light dark:bg-surface-dark text-sm font-semibold hover:bg-gray-50 dark:hover:bg-[#233529] transition-colors"><span class="material-symbols-outlined text-[20px]">file_download</span> Export</button><a href="/add" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-black text-sm font-bold hover:bg-[#0fd650] transition-colors shadow-[0_4px_12px_rgba(19,236,91,0.3)]"><span class="material-symbols-outlined text-[20px]">add</span> Add Expense</a></div>
+</header>
+<div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-sm border border-[#eef4f0] dark:border-[#2a3c30] overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-gray-50 border-b border-[#eef4f0] dark:bg-[#1a2c20] dark:border-[#2a3c30]">
+<tr><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Description</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Category</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Amount</th></tr>
+</thead>
+<tbody class="divide-y divide-[#eef4f0] dark:divide-[#2a3c30]">
+{% for expense in expenses %}
+<tr class="hover:bg-[#f6f8f6] dark:hover:bg-[#233529] transition-colors">
+<td class="px-6 py-4 font-bold text-text-primary-light dark:text-text-primary-dark">{{ expense.description }}</td>
+<td class="px-6 py-4"><span class="bg-gray-100 dark:bg-[#2a3c30] px-3 py-1 rounded-full text-xs font-bold text-text-primary-light dark:text-text-primary-dark">{{ expense.category }}</span></td>
+<td class="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark font-medium">{{ expense.date }}</td>
+<td class="px-6 py-4 text-right font-bold text-text-primary-light dark:text-text-primary-dark">{{ currency }}{{ expense.amount }}</td>
+</tr>
+{% else %}
+<tr><td colspan="4" class="p-8 text-center text-text-secondary-light dark:text-text-secondary-dark">No expenses found.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { "primary": "#13ec5b", "background-light": "#f6f8f6", "background-dark": "#102216", "surface-light": "#ffffff", "surface-dark": "#1a2c20", "text-primary-light": "#111813", "text-primary-dark": "#e0e6e2", "text-secondary-light": "#61896f", "text-secondary-dark": "#8aab97" },
+                fontFamily: { "display": ["Manrope", "sans-serif"] },
+            },
+        },
+    }
+</script>
+<style>
+    body { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display antialiased overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="w-64 h-full bg-surface-light dark:bg-surface-dark border-r border-[#eef4f0] dark:border-[#2a3c30] flex-shrink-0 flex flex-col justify-between hidden md:flex transition-colors duration-200">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-10">
+<div class="bg-primary/20 flex items-center justify-center rounded-lg size-10 text-primary"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+<div><h1 class="text-lg font-bold tracking-tight">ExpenseTracker</h1><p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Student Edition</p></div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium" href="/dashboard"><span class="material-symbols-outlined">grid_view</span><span>Dashboard</span></a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium" href="/expenses"><span class="material-symbols-outlined">receipt_long</span><span>Expenses</span></a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary dark:text-primary font-medium transition-colors" href="/ai_analysis"><span class="material-symbols-outlined" data-weight="fill">auto_awesome</span><span>AI Analysis</span></a>
+</nav>
+</div>
+<div class="p-6 border-t border-[#eef4f0] dark:border-[#2a3c30]">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary-light dark:text-text-secondary-dark hover:bg-[#f0f4f2] dark:hover:bg-[#233529] hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors font-medium mb-2" href="/logout"><span class="material-symbols-outlined">logout</span><span>Logout</span></a>
+</div>
+</aside>
+<main class="flex-1 h-full overflow-y-auto overflow-x-hidden no-scrollbar bg-background-light dark:bg-background-dark">
+<div class="max-w-[1200px] mx-auto p-4 md:p-8 lg:p-10 flex flex-col gap-8">
+<h1 class="text-3xl font-black mb-2 flex items-center gap-3"><span class="material-symbols-outlined text-4xl text-purple-600">auto_awesome</span> AI Insights</h1>
+<p class="text-text-secondary-light dark:text-text-secondary-dark mb-8">Smart advice based on your spending.</p>
+<div class="grid gap-6">
+{% for insight in insights %}
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-[#eef4f0] dark:border-[#2a3c30] flex items-start gap-4">
+<div class="size-10 rounded-full bg-purple-100 flex items-center justify-center shrink-0 text-purple-600"><span class="material-symbols-outlined">lightbulb</span></div>
+<div><h3 class="font-bold text-lg mb-1 text-text-primary-light dark:text-text-primary-dark">Insight</h3><p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">{{ insight|safe }}</p></div>
+</div>
+{% endfor %}
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>
