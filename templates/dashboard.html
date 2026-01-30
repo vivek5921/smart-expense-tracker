@@ -14,6 +14,13 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+    .color-dot { width: 8px; height: 8px; border-radius: 9999px; }
+    .color-dot[data-color="#13ec5b"] { background-color: #13ec5b; }
+    .color-dot[data-color="#fbbf24"] { background-color: #fbbf24; }
+    .color-dot[data-color="#f472b6"] { background-color: #f472b6; }
+    .color-dot[data-color="#60a5fa"] { background-color: #60a5fa; }
+    .color-dot[data-color="#a78bfa"] { background-color: #a78bfa; }
+    #chart-data { display: none; }
 </style>
 </head>
 <body class="bg-[#f8f9fa] text-[#111813] antialiased">
@@ -174,14 +181,19 @@
                 </div>
                 
                 <div class="space-y-3">
+                    {% set colors = ['#13ec5b', '#fbbf24', '#f472b6', '#60a5fa', '#a78bfa'] %}
+                    
+                    {% for cat in top_categories[:4] %}
                     <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-[#13ec5b]"></span> <span class="font-bold text-gray-600">Food</span></div>
-                        <span class="font-bold text-gray-900">40%</span>
+                        <div class="flex items-center gap-2">
+                            <span class="color-dot" data-color="{{ colors[loop.index0] }}"></span> 
+                            <span class="font-bold text-gray-600">{{ cat.name }}</span>
+                        </div>
+                        <span class="font-bold text-gray-900">{{ cat.percentage }}%</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-[#fbbf24]"></span> <span class="font-bold text-gray-600">Transport</span></div>
-                        <span class="font-bold text-gray-900">25%</span>
-                    </div>
+                    {% else %}
+                    <p class="text-xs text-gray-400 text-center">No data yet</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -193,8 +205,7 @@
     data-dates='{{ chart_dates | tojson }}' 
     data-daily='{{ chart_daily_amts | tojson }}'
     data-cats='{{ chart_cats | tojson }}'
-    data-cat-amts='{{ chart_cat_amts | tojson }}'
-    style="display: none;">
+    data-cat-amts='{{ chart_cat_amts | tojson }}'>
 </div>
 
 <script>
@@ -209,7 +220,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         var savingsBar = document.getElementById('savings-bar');
         if (savingsBar) {
-            savingsBar.style.width = "{{ savings_pct }}";
+            savingsBar.style.width = "{{ savings_pct }}%";
         }
     });
 

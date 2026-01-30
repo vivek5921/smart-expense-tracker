@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, url_for, g
 import sqlite3
 from datetime import datetime, timedelta
-# json is not needed here anymore, Jinja's tojson filter handles it better
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_final_key'
@@ -47,9 +46,7 @@ def init_db():
         db.commit()
 
 # --- Helper Functions ---
-# Defined globally so it is accessible by all routes
 def format_money(amount):
-    """Formats money based on the selected currency in session."""
     try:
         currency = session.get('currency', '₹')
     except RuntimeError: 
@@ -163,11 +160,25 @@ def dashboard():
         short_date = e['date'][5:] 
         date_totals[short_date] = date_totals.get(short_date, 0) + amt
 
-    # Prepare raw lists (Jinja will handle the conversion to JSON in the template)
+    # Prepare raw lists for ChartJS
     chart_dates = list(date_totals.keys())
     chart_daily_amts = list(date_totals.values())
     chart_cats = list(cat_totals.keys())
     chart_cat_amts = list(cat_totals.values())
+
+    # --- NEW: Prepare Top Categories Data for the List ---
+    # Convert cat_totals dictionary to a list of dicts for the template loop
+    # We sort them by amount to show the biggest spenders first
+    top_categories = []
+    sorted_cats = sorted(cat_totals.items(), key=lambda item: item[1], reverse=True)
+    
+    for cat, amount in sorted_cats:
+        percentage = int((amount / total_spent) * 100) if total_spent > 0 else 0
+        top_categories.append({
+            'name': cat,
+            'amount': amount,
+            'percentage': percentage
+        })
 
     user_budget = session.get('budget', 0)
     display_budget = user_budget
@@ -193,7 +204,8 @@ def dashboard():
                            chart_dates=chart_dates,
                            chart_daily_amts=chart_daily_amts,
                            chart_cats=chart_cats,
-                           chart_cat_amts=chart_cat_amts)
+                           chart_cat_amts=chart_cat_amts,
+                           top_categories=top_categories) # Passed this new variable
 
 @app.route('/expenses')
 def expenses():
@@ -221,6 +233,16 @@ def add():
         except ValueError:
             pass 
     return render_template('add.html')
+
+# --- NEW ROUTE: DELETE EXPENSE ---
+@app.route('/delete/<int:id>')
+def delete_expense(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    db = get_db()
+    # Ensure user can only delete their own expenses
+    db.execute('DELETE FROM expenses WHERE id = ? AND user_id = ?', (id, session['user_id']))
+    db.commit()
+    return redirect(url_for('expenses'))
 
 @app.route('/ai_analysis')
 def ai_analysis():

@@ -50,18 +50,29 @@
 <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-sm border border-[#eef4f0] dark:border-[#2a3c30] overflow-hidden">
 <table class="w-full text-left">
 <thead class="bg-gray-50 border-b border-[#eef4f0] dark:bg-[#1a2c20] dark:border-[#2a3c30]">
-<tr><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Description</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Category</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th><th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Amount</th></tr>
+<tr>
+    <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Description</th>
+    <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Category</th>
+    <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th>
+    <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Amount</th>
+    <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Action</th>
+</tr>
 </thead>
 <tbody class="divide-y divide-[#eef4f0] dark:divide-[#2a3c30]">
 {% for expense in expenses %}
-<tr class="hover:bg-[#f6f8f6] dark:hover:bg-[#233529] transition-colors">
+<tr class="hover:bg-[#f6f8f6] dark:hover:bg-[#233529] transition-colors group">
 <td class="px-6 py-4 font-bold text-text-primary-light dark:text-text-primary-dark">{{ expense.description }}</td>
 <td class="px-6 py-4"><span class="bg-gray-100 dark:bg-[#2a3c30] px-3 py-1 rounded-full text-xs font-bold text-text-primary-light dark:text-text-primary-dark">{{ expense.category }}</span></td>
 <td class="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark font-medium">{{ expense.date }}</td>
 <td class="px-6 py-4 text-right font-bold text-text-primary-light dark:text-text-primary-dark">{{ currency }}{{ expense.amount }}</td>
+<td class="px-6 py-4 text-right">
+    <a href="/delete/{{ expense.id }}" class="text-gray-400 hover:text-red-500 transition-colors" onclick="return confirm('Are you sure you want to delete this expense?')">
+        <span class="material-symbols-outlined">delete</span>
+    </a>
+</td>
 </tr>
 {% else %}
-<tr><td colspan="4" class="p-8 text-center text-text-secondary-light dark:text-text-secondary-dark">No expenses found.</td></tr>
+<tr><td colspan="5" class="p-8 text-center text-text-secondary-light dark:text-text-secondary-dark">No expenses found.</td></tr>
 {% endfor %}
 </tbody>
 </table>
